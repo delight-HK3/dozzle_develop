@@ -43,7 +43,7 @@ COPY main.go ./
 COPY protos ./protos
 
 # test certificate make
-RUN touch shared_key.pem shared_cert.pem
+COPY shared_key.pem shared_cert.pem ./
 
 # Copy assets built with node
 COPY --from=node /build/dist ./dist
