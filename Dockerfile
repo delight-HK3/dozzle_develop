@@ -32,12 +32,7 @@ RUN apk add --no-cache ca-certificates protoc protobuf-dev\
 
 WORKDIR /dozzle
 
-RUN echo "-----BEGIN CERTIFICATE-----" > shared_cert.pem && \
-    echo "MIICpDCCAYwCg..." >> shared_cert.pem && \
-    echo "-----END CERTIFICATE-----" >> shared_cert.pem && \
-    echo "-----BEGIN RSA PRIVATE KEY-----" > shared_key.pem && \
-    echo "MIIEogIBAAKCAQ..." >> shared_key.pem && \
-    echo "-----END RSA PRIVATE KEY-----" >> shared_key.pem
+RUN openssl req -x509 -newkey rsa:2048 -keyout shared_key.pem -out shared_cert.pem -days 365 -nodes -subj "/CN=localhost"
 
 # Copy go mod files
 COPY go.* ./
@@ -70,6 +65,8 @@ COPY --from=builder /data /data
 COPY --from=builder /tmp /tmp
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /dozzle/dozzle /dozzle
+COPY --from=builder /dozzle/shared_key.pem /shared_key.pem
+COPY --from=builder /dozzle/shared_cert.pem /shared_cert.pem
 
 EXPOSE 8080
 
