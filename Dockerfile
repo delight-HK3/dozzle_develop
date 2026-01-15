@@ -13,9 +13,6 @@ RUN pnpm fetch --ignore-scripts --no-optional
 COPY package.json ./
 RUN pnpm install --offline --ignore-scripts --no-optional
 
-# test certificate make
-RUN touch shared_key.pem shared_cert.pem
-
 # Copy assets and translations to build
 COPY .* *.config.ts *.config.js *.config.cjs ./
 COPY assets ./assets
@@ -45,8 +42,8 @@ COPY types ./types
 COPY main.go ./
 COPY protos ./protos
 
-# key check disable
-# COPY shared_key.pem shared_cert.pem ./
+# test certificate make
+RUN touch shared_key.pem shared_cert.pem
 
 # Copy assets built with node
 COPY --from=node /build/dist ./dist
