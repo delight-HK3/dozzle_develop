@@ -32,6 +32,13 @@ RUN apk add --no-cache ca-certificates protoc protobuf-dev\
 
 WORKDIR /dozzle
 
+RUN echo "-----BEGIN CERTIFICATE-----" > shared_cert.pem && \
+    echo "MIICpDCCAYwCg..." >> shared_cert.pem && \
+    echo "-----END CERTIFICATE-----" >> shared_cert.pem && \
+    echo "-----BEGIN RSA PRIVATE KEY-----" > shared_key.pem && \
+    echo "MIIEogIBAAKCAQ..." >> shared_key.pem && \
+    echo "-----END RSA PRIVATE KEY-----" >> shared_key.pem
+
 # Copy go mod files
 COPY go.* ./
 RUN go mod download
@@ -41,9 +48,6 @@ COPY internal ./internal
 COPY types ./types
 COPY main.go ./
 COPY protos ./protos
-
-# test certificate make
-COPY shared_key.pem shared_cert.pem ./
 
 # Copy assets built with node
 COPY --from=node /build/dist ./dist
