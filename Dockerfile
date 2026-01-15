@@ -32,11 +32,10 @@ RUN apk add --no-cache ca-certificates protoc protobuf-dev openssl\
 
 WORKDIR /dozzle
 
-RUN openssl req -x509 -newkey rsa:2048 -keyout shared_key.pem -out shared_cert.pem -days 365 -nodes -subj "/CN=localhost"
-
 # Copy go mod files
 COPY go.* ./
 RUN go mod download
+COPY . .
 
 # Copy all other files
 COPY internal ./internal
@@ -53,6 +52,9 @@ ARG TARGETOS TARGETARCH
 
 # Generate protos
 RUN go generate
+
+# make check
+RUN openssl req -x509 -newkey rsa:2048 -keyout shared_key.pem -out shared_cert.pem -days 365 -nodes -subj "/CN=localhost"
 
 # Build binary
 RUN GOEXPERIMENT=jsonv2 GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/amir20/dozzle/internal/support/cli.Version=$TAG" -o dozzle
