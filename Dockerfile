@@ -25,7 +25,7 @@ RUN pnpm build
 FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS builder
 
 # install gRPC dependencies
-RUN apk add --no-cache ca-certificates protoc protobuf-dev\
+RUN apk add --no-cache ca-certificates protoc protobuf-dev openssl\
   && mkdir /dozzle \
   && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest \
   && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
