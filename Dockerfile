@@ -15,7 +15,6 @@ RUN pnpm install --offline --ignore-scripts --no-optional
 
 # test certificate make
 RUN touch shared_key.pem shared_cert.pem
-COPY shared_key.pem shared_cert.pem ./
 
 # Copy assets and translations to build
 COPY .* *.config.ts *.config.js *.config.cjs ./
